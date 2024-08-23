@@ -1,0 +1,45 @@
+.main-content{
+    margin-left: 268px;
+}
+.logoutBtn{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: red;
+    color: #FFF;
+    font-weight: 600;
+    border: none;
+    width: 70%;
+    height: 40px;
+    border-radius: 25px;
+}
+.brands-cont{
+    padding-top: 50px;
+    padding-right: 150px;
+}
+.brand-list-item img{
+    width: 100px;
+}
+.brand-list-item button{
+    margin-left: 5px;
+}
+.models-cont{
+    padding-top: 50px;
+    padding-right: 150px;
+}
+.models-list-item img{
+    width: 100px;
+}
+.models-list-item button{
+    margin-left: 5px;
+}
+.cities-cont{
+    padding-top: 50px;
+    padding-right: 150px;
+}
+.cities-list-item img{
+    width: 100px;
+}
+.cities-list-item button{
+    margin-left: 5px;
+}
