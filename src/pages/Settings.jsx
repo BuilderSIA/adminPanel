@@ -6,6 +6,7 @@ const Settings = () => {
   const [editModelname,setEditModelname] = useState('')
   const [editModelbrand,setEditModelbrand] = useState('');
   const [editPic,setEditPic] = useState();
+  
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
 
   const formdata = new FormData();
