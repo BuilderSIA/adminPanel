@@ -32,7 +32,7 @@ function App() {
     fetch("https://autoapi.dezinfeksiyatashkent.uz/api/auth/signin", {
       method: "POST",
       body: JSON.stringify({
-        phone_number: number,
+        phone_number:number,
         password: psw,
       }),
       headers: {
@@ -52,7 +52,7 @@ function App() {
       }
     })
     .catch((error)=>console.log("Hatolik",error))  
-  },[])
+  },[user,psw,number])
 
   return (
     <>
