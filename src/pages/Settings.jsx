@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 
 const Settings = () => {
@@ -8,6 +9,7 @@ const Settings = () => {
   const [editPic,setEditPic] = useState();
   
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
+  let url = "https://autoapi.dezinfeksiyatashkent.uz/api/categories";
 
   const formdata = new FormData();
   formdata.append("name_en",editModelname)
@@ -16,9 +18,21 @@ const Settings = () => {
 
   const token = localStorage.getItem("token");
 
+
+  function getFunction(){
+    fetch("https://autoapi.dezinfeksiyatashkent.uz/api/categories")
+    .then((res)=>res.json())
+    .then((data)=>{
+      setModels(data?.data);
+      
+    })
+  }
+
+
+
   function createCategory(e){
     e?.preventDefault()
-    fetch("https://autoapi.dezinfeksiyatashkent.uz/api/categories",{
+    fetch(url,{
       method:"Post",
       body: formdata,
       headers:{
@@ -27,17 +41,40 @@ const Settings = () => {
       }
     })
     .then((res)=>res.json())
-    .then((data)=>console.log(data))
+    .then((data)=>{
+      if(data?.success===true){
+        toast.success(data?.message);
+        setEditModelname('')
+        setEditModelbrand('')
+        getFunction()
+      }else{
+        toast.error(data?.message);
+      }
+    })
   }
 
 
+  const deleteCat = (id) =>{
+    
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`,{
+      method:"Delete",
+      headers:{
+        "Authorization":`Bearer ${token}`
+      }
+    }).then((res)=>res.json())
+    .then((data)=>{
+      if(data?.success===true){
+        toast.success(data?.message);
+        getFunction()
+      }else{
+        toast.error(data?.message);
+      }
+    })
+  }
+
 
   useEffect(()=>{
-    fetch("https://autoapi.dezinfeksiyatashkent.uz/api/categories")
-    .then((res)=>res.json())
-    .then((data)=>{
-      setModels(data?.data)
-    })
+    getFunction()
   },[])
 
   
@@ -94,12 +131,12 @@ const Settings = () => {
   <tbody className="models-list">
       {models.map((item,index)=>{
         return(
-          <tr key={item.id} className="models-list-item">
+          <tr key={index} className="models-list-item">
             <th scope="row">{index+1}</th>
             <td>{item.name_en}</td>
             <td>{item.name_ru}</td>
             <td><img src={`${imgUrl}${item.image_src}`} alt="" /></td>
-            <td colSpan={2}>
+            <td colSpan={2}  >
               <div>
                 
                 {/* <!-- Button trigger modal --> */}
@@ -142,7 +179,7 @@ const Settings = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger">
+                <button className="btn btn-danger" onClick={()=>deleteCat(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
               </div>
