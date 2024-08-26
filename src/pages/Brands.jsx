@@ -60,8 +60,12 @@ const Brands = () => {
 
 
 
-  function deleteBrand(id){
-    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/brands/${id}`,{
+  const [delId,setDelId] = useState();
+
+
+  function deleteBrand(e){
+    e?.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/brands/${delId}`,{
       method:"Delete",
       headers:{
         "Authorization":`Bearer ${token}`
@@ -164,7 +168,7 @@ const Brands = () => {
   <tbody className="brand-list">
   {brands.map((item,index)=>{
       return(
-          <tr key={item.id} className="brand-list-item">
+          <tr key={item?.id} className="brand-list-item">
             <th scope="row">{index+1}</th>
             <td>{item.title}</td>
             <td><img src={`${imgUrl}${item.image_src}`} alt="" /></td>
@@ -205,8 +209,10 @@ const Brands = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
-                <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
+                
+                
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal" onClick={()=>setDelId(item?.id)}>
+                  <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
 
                  {/* <!-- Modal --> */}
@@ -222,13 +228,14 @@ const Brands = () => {
                         <button className="btn btn-secondary" data-bs-dismiss="modal">
                           Cancel
                         </button>
-                        <button className="btn btn-danger" onClick={()=>deleteBrand(item?.id)}>
+                        <button className="btn btn-danger" onClick={deleteBrand}>
                           Delete
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
+
               </div>
             </td>
           </tr>

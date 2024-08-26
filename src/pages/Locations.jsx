@@ -4,6 +4,9 @@ import { toast } from "react-toastify";
 const Locations = () => {
   const [location,setLocation] = useState([]);
   const [cityName,setCityName] = useState('');
+  const [cityPic,setCityPic] = useState(null);
+  const [cityText,setCityText] = useState('');
+  
   
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
   const token = localStorage.getItem("token");
@@ -11,7 +14,11 @@ const Locations = () => {
 
 
   const formData = new FormData();
-
+  formData.append("name",cityName)
+  formData.append("text",cityText)
+  if(cityPic){
+    formData.append("images",cityPic)
+  }
 
 
   function getFunction(){
@@ -31,7 +38,10 @@ const Locations = () => {
     }).then((res)=>res.json())
     .then((data)=>{
       if(data?.success == true){
-        toast.success(data?.message)
+        toast.success(data?.message);
+        setCityName('')
+        setCityPic(null)
+        setCityText('')
         getFunction()
       }else{
         toast.error(data?.message)
@@ -44,10 +54,11 @@ const Locations = () => {
   
   
 
+  const [delID,setDelID] = useState();
 
-
-  function deleteLocation(id){
-    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/locations/${id}`,{
+  function deleteLocation(e){
+    e?.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/locations/${delID}`,{
       method:"Delete",
       headers:{
         "Authorization":`Bearer ${token}`
@@ -116,10 +127,19 @@ const Locations = () => {
                       </div>
                       <div className="modal-body">
                         <label htmlFor="Model">
-                          City name
+                          Location
                         </label>
                         <br />
                         <input className="form-control" type="text" id=""  value={cityName} onChange={(e)=>setCityName(e.target.value)}/>
+                        <label htmlFor="Model">
+                          City Name
+                        </label>
+                        <br />
+                        <textarea className="form-control" type="text" id=""  value={cityText} onChange={(e)=>setCityText(e.target.value)}/>
+                        <div className="mb-3">
+                          <label htmlFor="formFile" className="form-label">Set image</label>
+                          <input className="form-control" type="file" id="formFile" onChange={(e)=>setCityPic(e?.target?.files[0])}/>
+                        </div>
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -172,7 +192,7 @@ const Locations = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal" onClick={()=>setDelID(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
 
@@ -189,7 +209,7 @@ const Locations = () => {
                         <button className="btn btn-secondary" data-bs-dismiss="modal">
                           Cancel
                         </button>
-                        <button className="btn btn-danger" onClick={()=>deleteLocation(item?.id)}>
+                        <button className="btn btn-danger" onClick={deleteLocation}>
                           Delete
                         </button>
                       </div>
