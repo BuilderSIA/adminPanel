@@ -8,16 +8,10 @@ const navigate = useNavigate()
 
 
 
-if(localStorage.getItem("token")=="undefined"){
-  return (
-    <>
-    <Home/>
-    </>
-  )
+if(localStorage.getItem("token")=="undefined" || localStorage.getItem("token")){
+  return <Home/>
 }else{
   return navigate("/login")
-}
-
-}
+}}
 
 export default ProtectedRoute
