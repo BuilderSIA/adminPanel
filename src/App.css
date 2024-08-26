@@ -43,3 +43,18 @@
 .cities-list-item button{
     margin-left: 5px;
 }
+#login{
+    position: absolute;
+    top: 35%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+}
+#login-input-number{
+    width: 500px !important;
+}
+#login-input-password{
+    width: 500px !important;
+}

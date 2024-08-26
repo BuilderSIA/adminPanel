@@ -39,7 +39,14 @@ const Cars = () => {
     fetch("https://autoapi.dezinfeksiyatashkent.uz/api/cars")
       .then((res) => res.json())
       .then((data) => {
-        setCars(data?.data);
+        if(data?.success==true){
+          setCars(data?.data);
+        }else if(data?.message.length > 50){
+          console.log(data?.message);
+          toast.error("Problems on server, please try later!!!")
+        }else{
+          toast.error(data?.message)
+        }
       });
   }
 
@@ -183,7 +190,9 @@ const Cars = () => {
 
 
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getFunction()
+  },[]);
 
   return (
     <div className="cars-cont">

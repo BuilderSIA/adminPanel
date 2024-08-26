@@ -1,24 +1,27 @@
 /* eslint-disable react/prop-types */
 
 
-const Login = ({number,psw,setPsw,setNumber}) => {
+const Login = ({number,psw,setPsw,setNumber,loginFunc,handleUser}) => {
 
 
   return (
-    <form className="container w-50 mt-5 mx-5">
+    <form className="container" id="login" onSubmit={loginFunc}>
       <h2>
         AutoZoom Admin
       </h2>
       <div className="row mb-3">
         <div className="col-sm-10">
-          <input type="text" className="form-control" id="" placeholder="Number" value={number}  onChange={(e)=>setNumber(e.target.value)}/>
+          <input type="text" className="form-control w-50" id="login-input-number" placeholder="Number" value={number}  onChange={(e)=>setNumber(e.target.value)}/>
         </div>
       </div>
       <div className="row mb-3">
         <div className="col-sm-10">
-          <input type="text" className="form-control" id="" placeholder="Password" value={psw} onChange={(e)=>setPsw(e.target.value)}/>
+          <input type="password" className="form-control w-50" id="login-input-password" placeholder="Password" value={psw} onChange={(e)=>setPsw(e.target.value)}/>
         </div>
       </div>
+      <button type="button" className="btn btn-primary" onClick={()=>handleUser(number,psw)}>
+        Log in
+      </button>
     </form>
 
 

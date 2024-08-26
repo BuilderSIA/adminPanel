@@ -13,6 +13,7 @@ import Models from "./pages/Models";
 import Locations from "./pages/Locations";
 import Cities from "./pages/Cities";
 import Cars from "./pages/Cars";
+import { toast } from "react-toastify";
 
 
 
@@ -29,7 +30,8 @@ function App() {
     localStorage.setItem("user",JSON.stringify(user))
   }
 
-  useEffect(()=>{
+  function loginFunc(){
+    if(number>'' && psw>''){
     fetch("https://autoapi.dezinfeksiyatashkent.uz/api/auth/signin", {
       method: "POST",
       body: JSON.stringify({
@@ -42,25 +44,32 @@ function App() {
     }).then((data)=>data.json())
     .then((res)=>{
       if(res.success){
-        console.log(res);
+        toast.success(res?.message)
         navigate("/");
         localStorage.setItem("token",res?.data?.tokens?.accessToken?.token)
         setToken(res?.data?.tokens?.accessToken?.token)
       }else if(localStorage.getItem("token")=="undefined"){
         navigate('/')
       }else{
-        navigate('/login')
+        navigate('/login');
+        toast.error(res?.message)
       }
     })
-    .catch((error)=>console.log("Hatolik",error))  
-  },[user,psw,number])
+    .catch((error)=>console.log("Hatolik",error))
+  }
+  }
+
+
+  useEffect(()=>{
+      loginFunc()
+  },[user])
 
   return (
     <>
     {localStorage.getItem("token")?<Sidebar/>:null}
       <div className="main-content">
       <Routes>
-        <Route path={"/login"} element={localStorage.getItem("token")?<Home/>:<Login number={number} psw={psw} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
+        <Route path={"/login"} element={localStorage.getItem("token")?<Home/>:<Login number={number} psw={psw} loginFunc={loginFunc} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
         <Route path={"/"} element={<ProtectedRoute />} />
         <Route path={"/Home"} element={<Home/>} />
         <Route path={"/settings"} element={<Settings/>} />
