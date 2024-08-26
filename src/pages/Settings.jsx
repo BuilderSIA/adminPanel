@@ -6,7 +6,7 @@ const Settings = () => {
   const [models,setModels] = useState([]);
   const [editModelname,setEditModelname] = useState('')
   const [editModelbrand,setEditModelbrand] = useState('');
-  const [editPic,setEditPic] = useState();
+  const [editPic,setEditPic] = useState(null);
   
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
   let url = "https://autoapi.dezinfeksiyatashkent.uz/api/categories";
@@ -72,6 +72,37 @@ const Settings = () => {
     })
   }
 
+
+  const [editID,setEditID] = useState();
+  const formData = new FormData();
+
+  formData.append("name_en",editModelname)
+  formData.append("name_ru",editModelbrand)
+  if(editPic){
+    formData.append("images",editPic)
+  }
+  
+  const editCat = (e) => {
+    e.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${editID}`,{
+      method: "Put",
+      headers:{
+        "Authorization":`Bearer ${token}`
+      },
+      body:formData,
+    }).then((res)=>res.json())
+    .then((data)=>{
+      if(data?.success===true){
+        toast.success(data?.message);
+        setEditModelbrand('')
+        setEditModelname('')
+        setEditPic(null)
+        getFunction()
+      }else{
+        toast.error(data?.message);
+      } 
+    })
+  }
 
   useEffect(()=>{
     getFunction()
@@ -140,20 +171,20 @@ const Settings = () => {
               <div>
                 
                 {/* <!-- Button trigger modal --> */}
-                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{
-                  setEditModelname(item.name);
-                  setEditModelbrand(item.brand_title);
-                  setEditPic(item.image_src)
+                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleEditModal"  onClick={()=>{
+                  setEditID(item?.id);
+                  setEditModelbrand(item?.name_ru);
+                  setEditModelname(item?.name_en);
                 }}>
                 <i className='bx bxs-edit-alt' style={{color:"#ffffff"}}></i>
                 </button>
 
                 {/* <!-- Modal --> */}
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal fade" id="exampleEditModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                       <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="exampleModalLabel">Edit model</h1>
+                        <h1 className="modal-title fs-5" id="exampleEditModalLabel">Edit model</h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div className="modal-body">
@@ -169,16 +200,17 @@ const Settings = () => {
                         <input className="form-control" type="text" id="" value={editModelbrand} onChange={(e)=>setEditModelbrand(e.target.value)} />
                         <div className="mb-3">
                           <label htmlFor="formFile" className="form-label">Edit brand image</label>
-                          <input className="form-control" type="file" id="formFile" onChange={(e)=>setEditPic(e.target.files[0].name)} />
+                          <input className="form-control" type="file" id="formFile" onChange={(e)=>setEditPic(e.target.files[0])} />
                         </div>
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary">Save changes</button>
+                        <button type="button" className="btn btn-primary" onClick={editCat} >Save changes</button>
                       </div>
                     </div>
                   </div>
                 </div>
+
                 <button className="btn btn-danger" onClick={()=>deleteCat(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>

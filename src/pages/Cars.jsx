@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 
 
@@ -9,24 +10,29 @@ const Cars = () => {
   const [carColor,setCarColor] = useState('');
   const [carCity,setCarCity] = useState('');
 
-
-
-
-
-  // let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/"
-  useEffect(()=>{
+  function getFunction(){
     fetch("https://autoapi.dezinfeksiyatashkent.uz/api/cars")
     .then((res)=>res.json())
     .then((data)=>{
-      setCars(data?.data)
+      setCars(data?.data);
+      
     })
-  })
+  }
+
+  
+
+
+  
+
+  // let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/"
+  useEffect(()=>{
+  },[])
 
 console.log(cars);
 
 
   return (
-    <div className="brands-cont">
+    <div className="cars-cont">
       <table className="table w-100">
   <thead>
     <tr className="table-secondary">
@@ -43,8 +49,8 @@ console.log(cars);
       </th>
     </tr>
   </thead>
-  <tbody className="brand-list">
-  {cars.map((item,index)=>{
+  <tbody className="cars-list">
+    {cars.map((item,index)=>{
       return(
           <tr key={item.id} className="brand-list-item">
             <th scope="row">{index+1}</th>
