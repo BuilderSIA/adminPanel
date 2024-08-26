@@ -220,9 +220,30 @@ const Models = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger" onClick={()=>deleteModel(item?.id)}>
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
+
+                 {/* <!-- Modal --> */}
+
+                 <div className="modal fade" id="exampleDeleteModal" tabIndex="-1" aria-labelledby="exampleDeleteModalLabel" aria-hidden="true">
+                  <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h1 className="modal-title fs-5" id="exampleDeleteModalLabel">Do you want to delete this?</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div className="modal-body">
+                        <button className="btn btn-secondary" data-bs-dismiss="modal">
+                          Cancel
+                        </button>
+                        <button className="btn btn-danger" onClick={()=>deleteModel(item?.id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
           </tr>

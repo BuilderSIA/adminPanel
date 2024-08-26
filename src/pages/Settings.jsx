@@ -54,23 +54,73 @@ const Settings = () => {
   }
 
 
-  const deleteCat = (id) =>{
-    
-    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`,{
-      method:"Delete",
-      headers:{
-        "Authorization":`Bearer ${token}`
+
+
+  
+  const deleteCat = async (id) => {
+    try {
+      // Fetch cars associated with the category
+      const carRes = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const carData = await carRes.json();
+  
+      // Check if there are cars associated with the category
+      if (carData?.data?.length > 0) {
+        // Loop through and delete each car
+        for (let car of carData.data) {
+          await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${car.id}`, {
+            method: "DELETE",
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+        }
+        toast.success("Associated cars deleted successfully.");
       }
-    }).then((res)=>res.json())
-    .then((data)=>{
-      if(data?.success===true){
+  
+      // Proceed with deleting the category after deleting associated cars
+      const res = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+  
+      if (data?.success === true) {
         toast.success(data?.message);
-        getFunction()
-      }else{
+        getFunction(); // Refresh the category list
+      } else {
         toast.error(data?.message);
       }
-    })
-  }
+    } catch (error) {
+      toast.error("An error occurred while deleting the category.");
+      console.error("Error:", error);
+    }
+  };
+  
+
+
+  // const deleteCat = (id) =>{
+  //   console.log(id);
+  //   fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`,{
+  //     method:"Delete",
+  //     headers:{
+  //       "Authorization":`Bearer ${token}`
+  //     }
+  //   }).then((res)=>res.json())
+  //   .then((data)=>{
+  //     if(data?.success===true){
+  //       toast.success(data?.message);
+  //       getFunction()
+  //     }else{
+  //       toast.error(data?.message);
+  //     }
+  //   })
+  // }
 
 
   const [editID,setEditID] = useState();
@@ -103,6 +153,10 @@ const Settings = () => {
       } 
     })
   }
+
+
+  console.log(models);
+  
 
   useEffect(()=>{
     getFunction()
@@ -211,9 +265,30 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <button className="btn btn-danger" onClick={()=>deleteCat(item?.id)}>
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
+
+                 {/* <!-- Modal --> */}
+
+                 <div className="modal fade" id="exampleDeleteModal" tabIndex="-1" aria-labelledby="exampleDeleteModalLabel" aria-hidden="true">
+                  <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h1 className="modal-title fs-5" id="exampleDeleteModalLabel">Do you want to delete this?</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div className="modal-body">
+                        <button className="btn btn-secondary"  data-bs-dismiss="modal">
+                          Cancel
+                        </button>
+                        <button className="btn btn-danger" onClick={()=>deleteCat(item?.id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
           </tr>
