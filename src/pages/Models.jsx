@@ -215,7 +215,7 @@ const Models = () => {
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick={editModel}>Save changes</button>
+                        <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={editModel}>Save changes</button>
                       </div>
                     </div>
                   </div>
