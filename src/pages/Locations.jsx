@@ -1,11 +1,23 @@
+/* eslint-disable no-unused-vars */
+
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 const Locations = () => {
   const [location,setLocation] = useState([]);
   const [cityName,setCityName] = useState('');
   const [cityPic,setCityPic] = useState(null);
   const [cityText,setCityText] = useState('');
+
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = location.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   
   
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
@@ -96,7 +108,10 @@ const Locations = () => {
     })
   }
 
+  console.log(location);
   
+
+
 
   useEffect(()=>{
     getFunction()
@@ -152,7 +167,7 @@ const Locations = () => {
     </tr>
   </thead>
   <tbody className="cities-list">
-  {location.map((item,index)=>{
+  {currentItems.map((item,index)=>{
       return(
           <tr key={item.id} className="cities-list-item">
             <th scope="row">{index+1}</th>
@@ -223,7 +238,7 @@ const Locations = () => {
       })}
   </tbody>
 </table>
-      
+      <Pagination itemPerPage={itemPerPage} totalItems={location.length} paginate={paginate} />
     </div>
   )
 }

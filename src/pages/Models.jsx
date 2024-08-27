@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import slugify from "slugify";
+import Pagination from "../components/Pagination";
 
 
 
@@ -10,6 +11,17 @@ const Models = () => {
   const [brands,setBrands] = useState([]);
   const [modelName,setModelName] = useState('')
   const [modelBrandID,setModelBrandID] = useState('');
+
+
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = models.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
   // let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/"
 
 
@@ -61,11 +73,12 @@ const Models = () => {
       }
     })
   }
+  
+  const [editID,setEditID] = useState();
 
-
-  const deleteModel = (id) =>{
-    
-    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/models/${id}`,{
+  const deleteModel = (e) =>{
+    e?.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/models/${editID}`,{
       method:"Delete",
       headers:{
         "Authorization":`Bearer ${token}`
@@ -81,7 +94,6 @@ const Models = () => {
     })
   }
 
-  const [editID,setEditID] = useState();
 
   function editModel(e){
     e?.preventDefault()
@@ -111,9 +123,7 @@ const Models = () => {
 
 
   useEffect(()=>{
-    getFunction()
-    
-      
+    getFunction() 
   },[])
 
   
@@ -168,7 +178,7 @@ const Models = () => {
     </tr>
   </thead>
   <tbody className="models-list">
-      {models.map((item,index)=>{
+      {currentItems.map((item,index)=>{
         return(
           <tr key={item.id} className="models-list-item">
             <th scope="row">{index+1}</th>
@@ -220,7 +230,7 @@ const Models = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal" onClick={()=>setEditID(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
 
@@ -237,7 +247,7 @@ const Models = () => {
                         <button className="btn btn-secondary" data-bs-dismiss="modal">
                           Cancel
                         </button>
-                        <button className="btn btn-danger" onClick={()=>deleteModel(item?.id)}>
+                        <button className="btn btn-danger" onClick={deleteModel}>
                           Delete
                         </button>
                       </div>
@@ -254,6 +264,10 @@ const Models = () => {
       }
       </tbody>
       </table>
+
+
+      <Pagination itemPerPage={itemPerPage} totalItems={models.length} paginate={paginate} />
+
     </div>
  )
 }

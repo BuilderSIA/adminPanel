@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 const Cars = () => {
   const [cars, setCars] = useState([]);
@@ -30,6 +31,17 @@ const Cars = () => {
   const [imageOne, setImageOne] = useState(null);
   const [imageTwo, setImageTwo] = useState(null);
   const [coverImg, setCoverImg] = useState();
+
+
+
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = cars.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
 
@@ -442,7 +454,7 @@ const Cars = () => {
           </tr>
         </thead>
         <tbody className="cars-list">
-          {cars.map((item, index) => {
+          {currentItems.map((item, index) => {
             return (
               <tr key={item.id} className="brand-list-item">
                 <th scope="row">{index + 1}</th>
@@ -743,6 +755,9 @@ const Cars = () => {
           })}
         </tbody>
       </table>
+
+
+      <Pagination itemPerPage={itemPerPage} totalItems={cars.length} paginate={paginate} />
     </div>
   );
 };

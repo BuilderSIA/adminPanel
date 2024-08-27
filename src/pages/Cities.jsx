@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 
 const Cities = () => {
@@ -8,6 +10,14 @@ const Cities = () => {
   const [cityPic,setCityPic] = useState(null);
   const [cityText,setCityText] = useState('');
   
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = cities.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
   const token = localStorage.getItem("token");
 
@@ -48,11 +58,14 @@ const Cities = () => {
         toast.error(data?.message);
       }
     })
-
+    
   }
+  
+  const [editID,setEditID] = useState();
 
-  function deleteCity(id){
-    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cities/${id}`,{
+  function deleteCity(e){
+    e?.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cities/${editID}`,{
       method:"Delete",
       headers:{
         "Authorization":`Bearer ${token}`
@@ -69,7 +82,6 @@ const Cities = () => {
   }
 
 
-  const [editID,setEditID] = useState();
 
 
   function editCity(e){
@@ -92,6 +104,7 @@ const Cities = () => {
       }
     })
   }
+
 
 
 
@@ -150,7 +163,7 @@ const Cities = () => {
     </tr>
   </thead>
   <tbody className="cities-list">
-  {cities.map((item,index)=>{
+  {currentItems.map((item,index)=>{
       return(
           <tr key={item.id} className="cities-list-item">
             <th scope="row">{index+1}</th>
@@ -200,7 +213,7 @@ const Cities = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal" onClick={()=>setEditID(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
 
@@ -217,7 +230,7 @@ const Cities = () => {
                         <button className="btn btn-secondary" data-bs-dismiss="modal">
                           Cancel
                         </button>
-                        <button className="btn btn-danger" onClick={()=>deleteCity(item?.id)}>
+                        <button className="btn btn-danger" onClick={deleteCity}>
                           Delete
                         </button>
                       </div>
@@ -231,7 +244,7 @@ const Cities = () => {
       })}
   </tbody>
 </table>
-      
+<Pagination itemPerPage={itemPerPage} totalItems={cities.length} paginate={paginate} />
     </div>
   )
 }

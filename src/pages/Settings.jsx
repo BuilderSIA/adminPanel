@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 
 const Settings = () => {
@@ -7,6 +9,16 @@ const Settings = () => {
   const [editModelname,setEditModelname] = useState('')
   const [editModelbrand,setEditModelbrand] = useState('');
   const [editPic,setEditPic] = useState(null);
+
+
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = models.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   
   let imgUrl = "https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/";
   let url = "https://autoapi.dezinfeksiyatashkent.uz/api/categories";
@@ -57,70 +69,70 @@ const Settings = () => {
 
 
   
-  const deleteCat = async (id) => {
-    try {
-      // Fetch cars associated with the category
-      const carRes = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      const carData = await carRes.json();
+  // const deleteCat = async (id) => {
+  //   try {
+  //     // Fetch cars associated with the category
+  //     const carRes = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${id}`, {
+  //       headers: {
+  //         "Authorization": `Bearer ${token}`
+  //       }
+  //     });
+  //     const carData = await carRes.json();
   
-      // Check if there are cars associated with the category
-      if (carData?.data?.length > 0) {
-        // Loop through and delete each car
-        for (let car of carData.data) {
-          await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${car.id}`, {
-            method: "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
-          });
-        }
-        toast.success("Associated cars deleted successfully.");
-      }
-  
-      // Proceed with deleting the category after deleting associated cars
-      const res = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-  
-      if (data?.success === true) {
-        toast.success(data?.message);
-        getFunction(); // Refresh the category list
-      } else {
-        toast.error(data?.message);
-      }
-    } catch (error) {
-      toast.error("An error occurred while deleting the category.");
-      console.error("Error:", error);
-    }
-  };
-  
-
-
-  // const deleteCat = (id) =>{
-  //   console.log(id);
-  //   fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`,{
-  //     method:"Delete",
-  //     headers:{
-  //       "Authorization":`Bearer ${token}`
+  //     // Check if there are cars associated with the category
+  //     if (carData?.data?.length > 0) {
+  //       // Loop through and delete each car
+  //       for (let car of carData.data) {
+  //         await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/cars/${car.id}`, {
+  //           method: "DELETE",
+  //           headers: {
+  //             "Authorization": `Bearer ${token}`
+  //           }
+  //         });
+  //       }
+  //       toast.success("Associated cars deleted successfully.");
   //     }
-  //   }).then((res)=>res.json())
-  //   .then((data)=>{
-  //     if(data?.success===true){
+  
+  //     // Proceed with deleting the category after deleting associated cars
+  //     const res = await fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Authorization": `Bearer ${token}`
+  //       }
+  //     });
+  //     const data = await res.json();
+  
+  //     if (data?.success === true) {
   //       toast.success(data?.message);
-  //       getFunction()
-  //     }else{
+  //       getFunction(); // Refresh the category list
+  //     } else {
   //       toast.error(data?.message);
   //     }
-  //   })
-  // }
+  //   } catch (error) {
+  //     toast.error("An error occurred while deleting the category.");
+  //     console.error("Error:", error);
+  //   }
+  // };
+  
+
+
+  const deleteCat = (e) =>{
+    e?.preventDefault();
+    fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/categories/${editID}`,{
+      method:"Delete",
+      headers:{
+        "Authorization":`Bearer ${token}`
+      }
+    }).then((res)=>res.json())
+    .then((data)=>{
+      if(data?.success===true){
+        toast.success(data?.message);
+        getFunction()
+      }else{
+        toast.error(data?.message);
+      }
+    })
+  }
 
 
   const [editID,setEditID] = useState();
@@ -154,8 +166,6 @@ const Settings = () => {
     })
   }
 
-
-  console.log(models);
   
 
   useEffect(()=>{
@@ -214,7 +224,7 @@ const Settings = () => {
     </tr>
   </thead>
   <tbody className="models-list">
-      {models.map((item,index)=>{
+      {currentItems.map((item,index)=>{
         return(
           <tr key={index} className="models-list-item">
             <th scope="row">{index+1}</th>
@@ -265,7 +275,7 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal">
+                <button className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteModal" onClick={()=>setEditID(item?.id)}>
                 <i className='bx bxs-trash' style={{color:"#ffffff"}} ></i>
                 </button>
 
@@ -282,7 +292,7 @@ const Settings = () => {
                         <button className="btn btn-secondary"  data-bs-dismiss="modal">
                           Cancel
                         </button>
-                        <button className="btn btn-danger" onClick={()=>deleteCat(item?.id)}>
+                        <button className="btn btn-danger" onClick={deleteCat}>
                           Delete
                         </button>
                       </div>
@@ -299,6 +309,10 @@ const Settings = () => {
       }
       </tbody>
       </table>
+
+
+      <Pagination itemPerPage={itemPerPage} totalItems={models.length} paginate={paginate} />
+
     </div>
     
   )

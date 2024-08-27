@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 
 const Brands = () => {
@@ -8,6 +10,16 @@ const Brands = () => {
   
   const [brandName,setBrandName] = useState('');
   const [brandPic,setBrandPic] = useState(null);
+
+
+  const [currentPage,setCurrentPage] = useState(1);
+  const [itemPerPage,setItemPerPage] = useState(5);
+  const indexOfLastItem = currentPage*itemPerPage;
+  const indexOfFirstitem = indexOfLastItem - itemPerPage;
+  const currentItems = brands.slice(indexOfFirstitem,indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   
   const token = localStorage.getItem("token");
 
@@ -18,7 +30,9 @@ const Brands = () => {
 
   const formdata = new FormData();
   formdata.append("title",brandName);
-  formdata.append("images",brandPic);
+  if(brandPic){
+    formdata.append("images",brandPic);
+  }
 
   
 
@@ -61,10 +75,12 @@ const Brands = () => {
 
 
   const [delId,setDelId] = useState();
-
+  
 
   function deleteBrand(e){
     e?.preventDefault();
+    
+    
     fetch(`https://autoapi.dezinfeksiyatashkent.uz/api/brands/${delId}`,{
       method:"Delete",
       headers:{
@@ -166,7 +182,7 @@ const Brands = () => {
     </tr>
   </thead>
   <tbody className="brand-list">
-  {brands.map((item,index)=>{
+  {currentItems.map((item,index)=>{
       return(
           <tr key={item?.id} className="brand-list-item">
             <th scope="row">{index+1}</th>
@@ -243,7 +259,7 @@ const Brands = () => {
       })}
   </tbody>
 </table>
-      
+    <Pagination itemPerPage={itemPerPage} totalItems={brands.length} paginate={paginate} />
     </div>
   )
 }
