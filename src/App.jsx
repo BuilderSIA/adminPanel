@@ -5,7 +5,6 @@ import "./App.css";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
-import Home from "./pages/Home";
 import Sidebar from "./components/Sidebar";
 import Settings from "./pages/Settings";
 import Brands from "./pages/Brands";
@@ -69,9 +68,8 @@ function App() {
     {localStorage.getItem("token")?<Sidebar/>:null}
       <div className="main-content">
       <Routes>
-        <Route path={"/login"} element={localStorage.getItem("token")?<Home/>:<Login number={number} psw={psw} loginFunc={loginFunc} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
+        <Route path={"/login"} element={localStorage.getItem("token")?<Settings/>:<Login number={number} psw={psw} loginFunc={loginFunc} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
         <Route path={"/"} element={<ProtectedRoute />} />
-        <Route path={"/Home"} element={<Home/>} />
         <Route path={"/settings"} element={<Settings/>} />
         <Route path={"/brands"} element={<Brands/>} />
         <Route path={"/models"} element={<Models/>} />

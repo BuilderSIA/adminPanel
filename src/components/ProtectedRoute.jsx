@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from 'react-router-dom';
-import Home from '../pages/Home';
+import Settings from '../pages/Settings';
 
 const ProtectedRoute = () => {
 const navigate = useNavigate()
@@ -9,7 +9,7 @@ const navigate = useNavigate()
 
 
 if(localStorage.getItem("token")=="undefined" || localStorage.getItem("token")){
-  return <Home/>
+  return <Settings/>
 }else{
   return navigate("/login")
 }}

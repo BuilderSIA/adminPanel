@@ -20,12 +20,7 @@ const Sidebar = () => {
         </div>
     </section>
     <ul className="nav-links">
-      <Link to={"/Home"} className='nav-links-item'>
-      <img src="/home.png" alt="" />
-        <span>
-            Dashboard
-        </span>
-      </Link>
+      
       <Link to={"/settings"} className='nav-links-item'>
       <img src="/settings.png" alt="" />
         <span>
