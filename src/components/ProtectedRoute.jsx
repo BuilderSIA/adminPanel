@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from 'react-router-dom';
-import Settings from '../pages/Settings';
 
 const ProtectedRoute = () => {
 const navigate = useNavigate()
@@ -8,8 +7,8 @@ const navigate = useNavigate()
 
 
 
-if(localStorage.getItem("token")){
-  return <Settings/>
+if(sessionStorage.getItem("token")){
+  return navigate("/settings")
 }else{
   return navigate("/login")
 }}

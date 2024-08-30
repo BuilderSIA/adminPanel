@@ -45,9 +45,9 @@ function App() {
       if(res.success){
         toast.success(res?.message)
         navigate("/");
-        localStorage.setItem("token",res?.data?.tokens?.accessToken?.token)
+        sessionStorage.setItem("token",res?.data?.tokens?.accessToken?.token)
         setToken(res?.data?.tokens?.accessToken?.token)
-      }else if(localStorage.getItem("token")){
+      }else if(sessionStorage.getItem("token")){
         navigate('/')
       }else{
         navigate('/login');

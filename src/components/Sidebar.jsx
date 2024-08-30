@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import '../style/Sidebar.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
 
     const [side,setSide] = useState(true);
 
+    const navigate = useNavigate()
 
   return (
     <div className='sidebar-cont'>
@@ -59,8 +60,8 @@ const Sidebar = () => {
       </Link>
     </ul>
     <button className='logoutBtn' onClick={()=>{
-        localStorage.removeItem("token");
-        location.reload(true)
+        sessionStorage.removeItem("token");
+        navigate("/login");
     }}>
         {side? <img src="/off.png" alt="" />:"Log out" }
     </button>
