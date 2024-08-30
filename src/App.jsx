@@ -65,10 +65,10 @@ function App() {
 
   return (
     <>
-    {localStorage.getItem("token")?<Sidebar/>:null}
+    {sessionStorage.getItem("token")?<Sidebar/>:null}
       <div className="main-content">
       <Routes>
-        <Route path={"/login"} element={localStorage.getItem("token")?<Settings/>:<Login number={number} psw={psw} loginFunc={loginFunc} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
+        <Route path={"/login"} element={sessionStorage.getItem("token")?<Settings/>:<Login number={number} psw={psw} loginFunc={loginFunc} handleUser={handleUser} setNumber={setNumber} setPsw={setPsw} />} />
         <Route path={"/"} element={<ProtectedRoute />} />
         <Route path={"/settings"} element={<Settings/>} />
         <Route path={"/brands"} element={<Brands/>} />
