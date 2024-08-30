@@ -47,7 +47,7 @@ function App() {
         navigate("/");
         localStorage.setItem("token",res?.data?.tokens?.accessToken?.token)
         setToken(res?.data?.tokens?.accessToken?.token)
-      }else if(localStorage.getItem("token")=="undefined"){
+      }else if(localStorage.getItem("token")){
         navigate('/')
       }else{
         navigate('/login');
